@@ -1,24 +1,20 @@
-package nl.spelberg.wicket.beanedit;
+package nl.spelberg.viewbean;
 
 import java.util.Date;
-import nl.spelberg.viewbean.BeanEditAttribute;
-import nl.spelberg.viewbean.BeanEditBean;
-import nl.spelberg.viewbean.BeanEditUtils;
-import nl.spelberg.viewbean.ViewField;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class BeanEditBeanTest {
+public class ViewBeanModelTest {
 
     @Test
     public void testNoAttributes() {
-        BeanEditBean bean = new BeanEditBean<Object>(new Object());
+        ViewBeanModel beanModel = new ViewBeanModel<Object>(new Object());
 
-        assertNotNull(bean.fields());
-        assertEquals(0, bean.fields().size());
+        assertNotNull(beanModel.fields());
+        assertEquals(0, beanModel.fields().size());
 
         try {
-            new BeanEditBean<Object>(null);
+            new ViewBeanModel<Object>(null);
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals("bean is null", e.getMessage());
@@ -28,20 +24,20 @@ public class BeanEditBeanTest {
     @Test
     public void testSimpleAttributes() {
         SimpleBean simpleBean = new SimpleBean("simple value");
-        BeanEditBean<SimpleBean> bean = new BeanEditBean<SimpleBean>(simpleBean);
+        ViewBeanModel<SimpleBean> beanModel = new ViewBeanModel<SimpleBean>(simpleBean);
 
-        assertNotNull(bean.fields());
-        assertEquals(1, bean.fields().size());
+        assertNotNull(beanModel.fields());
+        assertEquals(1, beanModel.fields().size());
 
-        BeanEditAttribute<String> valueAttribute = bean.fieldWithName("value", String.class);
+        ViewBeanField<String> valueAttributeView = beanModel.fieldWithName("value", String.class);
 
-        assertEquals(new BeanEditAttribute<String>(simpleBean, BeanEditUtils.fieldForName(simpleBean, "value")),
-                bean.fields().iterator().next());
+        assertEquals(new ViewBeanField<String>(simpleBean, ViewBeanUtils.fieldForName(simpleBean, "value")),
+                beanModel.fields().iterator().next());
 
-        assertEquals("value", valueAttribute.id());
-        assertEquals("simple value", valueAttribute.value());
-        assertFalse(valueAttribute.readOnly());
-        assertFalse(valueAttribute.nullable());
+        assertEquals("value", valueAttributeView.id());
+        assertEquals("simple value", valueAttributeView.value());
+        assertFalse(valueAttributeView.readOnly());
+        assertFalse(valueAttributeView.nullable());
     }
 
     private static class SimpleBean {

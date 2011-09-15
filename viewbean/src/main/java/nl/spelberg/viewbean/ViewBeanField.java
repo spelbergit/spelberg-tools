@@ -7,7 +7,7 @@ import nl.spelberg.util.event.Listeners;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
-public class BeanEditAttribute<T> implements Serializable {
+public class ViewBeanField<T> implements Serializable {
 
     private static final long serialVersionUID = 42L;
 
@@ -22,11 +22,11 @@ public class BeanEditAttribute<T> implements Serializable {
     private transient String id;
     private transient String label;
 
-    public BeanEditAttribute(Object bean, Field field) {
+    public ViewBeanField(Object bean, Field field) {
         this(bean, field.getName());
     }
 
-    public BeanEditAttribute(Object bean, String fieldName) {
+    public ViewBeanField(Object bean, String fieldName) {
         Assert.notNull(bean, "bean is null");
         Assert.notNull(fieldName, "fieldName is null");
         this.bean = bean;
@@ -43,7 +43,7 @@ public class BeanEditAttribute<T> implements Serializable {
     private void init() {
         if (field == null) {
             // on
-            this.field = BeanEditUtils.fieldForName(bean, fieldName);
+            this.field = ViewBeanUtils.fieldForName(bean, fieldName);
             // check if on is accessible
             this.field.setAccessible(true);
 
@@ -132,10 +132,10 @@ public class BeanEditAttribute<T> implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof BeanEditAttribute)) {
+        if (!(o instanceof ViewBeanField)) {
             return false;
         }
-        BeanEditAttribute that = (BeanEditAttribute) o;
+        ViewBeanField that = (ViewBeanField) o;
         return bean.equals(that.bean) && fieldName.equals(that.fieldName);
     }
 
@@ -148,13 +148,13 @@ public class BeanEditAttribute<T> implements Serializable {
 
     @Override
     public String toString() {
-        return "BeanEditAttribute{name='" + id + ", bean=" + bean + "'}";
+        return "ViewBeanField{name='" + id + ", bean=" + bean + "'}";
     }
 
     public static interface UpdateListener<T> {
 
-        void beforeUpdate(BeanEditAttribute<T> beanEditAttribute);
-        void afterUpdate(BeanEditAttribute<T> beanEditAttribute);
+        void beforeUpdate(ViewBeanField<T> viewBeanField);
+        void afterUpdate(ViewBeanField<T> viewBeanField);
 
     }
 

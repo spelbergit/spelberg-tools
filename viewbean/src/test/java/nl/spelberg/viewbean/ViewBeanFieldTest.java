@@ -1,70 +1,67 @@
-package nl.spelberg.wicket.beanedit;
+package nl.spelberg.viewbean;
 
-import nl.spelberg.viewbean.BeanEditAttribute;
-import nl.spelberg.viewbean.BeanEditUtils;
-import nl.spelberg.viewbean.ViewField;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class BeanEditAttributeTest {
+public class ViewBeanFieldTest {
 
     private TestBean testBean;
-    private BeanEditAttribute<String> normalAttribute;
-    private BeanEditAttribute<String> namedAttribute;
-    private BeanEditAttribute<String> readOnlyAttribute;
-    private BeanEditAttribute<String> finalReadOnlyAttribute;
-    private BeanEditAttribute<String> finalAttribute;
-    private BeanEditAttribute<String> nullableAttribute;
-    private BeanEditAttribute<Integer> intAttribute;
+    private ViewBeanField<String> normalAttributeView;
+    private ViewBeanField<String> namedAttributeView;
+    private ViewBeanField<String> readOnlyAttributeView;
+    private ViewBeanField<String> finalReadOnlyAttributeView;
+    private ViewBeanField<String> finalAttributeView;
+    private ViewBeanField<String> nullableAttributeView;
+    private ViewBeanField<Integer> intAttributeView;
 
     @Before
     public void init() {
         testBean = new TestBean("normal", "named", "readOnly", "finalReadOnly", "nullable", 42);
-        normalAttribute = new BeanEditAttribute<String>(testBean, BeanEditUtils.fieldForName(testBean, "normalValue"));
-        namedAttribute = new BeanEditAttribute<String>(testBean, BeanEditUtils.fieldForName(testBean, "namedValue"));
-        readOnlyAttribute = new BeanEditAttribute<String>(testBean, BeanEditUtils.fieldForName(testBean, "readOnlyValue"));
-        finalReadOnlyAttribute = new BeanEditAttribute<String>(testBean, BeanEditUtils.fieldForName(testBean,
-                "finalReadOnlyValue"));
-        finalAttribute = new BeanEditAttribute<String>(testBean, BeanEditUtils.fieldForName(testBean, "finalValue"));
-        nullableAttribute = new BeanEditAttribute<String>(testBean, BeanEditUtils.fieldForName(testBean, "nullableValue"));
-        intAttribute = new BeanEditAttribute<Integer>(testBean, BeanEditUtils.fieldForName(testBean, "intValue"));
+        normalAttributeView = new ViewBeanField<String>(testBean, ViewBeanUtils.fieldForName(testBean, "normalValue"));
+        namedAttributeView = new ViewBeanField<String>(testBean, ViewBeanUtils.fieldForName(testBean, "namedValue"));
+        readOnlyAttributeView = new ViewBeanField<String>(testBean, ViewBeanUtils.fieldForName(testBean, "readOnlyValue"));
+        finalReadOnlyAttributeView = new ViewBeanField<String>(testBean,
+                ViewBeanUtils.fieldForName(testBean, "finalReadOnlyValue"));
+        finalAttributeView = new ViewBeanField<String>(testBean, ViewBeanUtils.fieldForName(testBean, "finalValue"));
+        nullableAttributeView = new ViewBeanField<String>(testBean, ViewBeanUtils.fieldForName(testBean, "nullableValue"));
+        intAttributeView = new ViewBeanField<Integer>(testBean, ViewBeanUtils.fieldForName(testBean, "intValue"));
     }
 
     @Test
     public void testName() throws Exception {
-        assertEquals("normalValue", normalAttribute.id());
-        assertEquals("name of value", namedAttribute.id());
-        assertEquals("readOnlyValue", readOnlyAttribute.id());
-        assertEquals("finalReadOnlyValue", finalReadOnlyAttribute.id());
-        assertEquals("finalValue", finalAttribute.id());
-        assertEquals("nullableValue", nullableAttribute.id());
-        assertEquals("intValue", intAttribute.id());
+        assertEquals("normalValue", normalAttributeView.id());
+        assertEquals("name of value", namedAttributeView.id());
+        assertEquals("readOnlyValue", readOnlyAttributeView.id());
+        assertEquals("finalReadOnlyValue", finalReadOnlyAttributeView.id());
+        assertEquals("finalValue", finalAttributeView.id());
+        assertEquals("nullableValue", nullableAttributeView.id());
+        assertEquals("intValue", intAttributeView.id());
     }
 
     @Test
     public void testValue() throws Exception {
-        assertEquals("normal", normalAttribute.value());
-        assertEquals("named", namedAttribute.value());
-        assertEquals("readOnly", readOnlyAttribute.value());
-        assertEquals("finalReadOnly", finalReadOnlyAttribute.value());
-        assertEquals(null, finalAttribute.value());
-        assertEquals("nullable", nullableAttribute.value());
-        assertEquals(Integer.valueOf(42), intAttribute.value());
+        assertEquals("normal", normalAttributeView.value());
+        assertEquals("named", namedAttributeView.value());
+        assertEquals("readOnly", readOnlyAttributeView.value());
+        assertEquals("finalReadOnly", finalReadOnlyAttributeView.value());
+        assertEquals(null, finalAttributeView.value());
+        assertEquals("nullable", nullableAttributeView.value());
+        assertEquals(Integer.valueOf(42), intAttributeView.value());
     }
 
     @Test
     public void testUpdate() throws Exception {
-        normalAttribute.update("newNormal");
-        assertEquals("newNormal", normalAttribute.value());
+        normalAttributeView.update("newNormal");
+        assertEquals("newNormal", normalAttributeView.value());
         assertEquals("newNormal", testBean.getNormalValue());
 
-        namedAttribute.update("newNamed");
-        assertEquals("newNamed", namedAttribute.value());
+        namedAttributeView.update("newNamed");
+        assertEquals("newNamed", namedAttributeView.value());
         assertEquals("newNamed", testBean.getNamedValue());
 
         try {
-            readOnlyAttribute.update("newReadOnly");
+            readOnlyAttributeView.update("newReadOnly");
             fail();
         } catch (UnsupportedOperationException e) {
             assertEquals("Illegal to update read-only on 'readOnlyValue' in bean class '" + TestBean.class.getName() + "'",
@@ -72,7 +69,7 @@ public class BeanEditAttributeTest {
         }
 
         try {
-            finalReadOnlyAttribute.update("newFinalReadOnly");
+            finalReadOnlyAttributeView.update("newFinalReadOnly");
             fail();
         } catch (UnsupportedOperationException e) {
             assertEquals("Illegal to update read-only on 'finalReadOnlyValue' in bean class '" + TestBean.class.getName() + "'",
@@ -80,46 +77,47 @@ public class BeanEditAttributeTest {
         }
 
         try {
-            finalAttribute.update("newFinal");
+            finalAttributeView.update("newFinal");
             fail();
         } catch (UnsupportedOperationException e) {
             assertEquals("Illegal to update final on 'finalValue' in bean class '" + TestBean.class.getName() + "'",
                     e.getMessage());
         }
 
-        nullableAttribute.update("newNullable");
-        assertEquals("newNullable", nullableAttribute.value());
+        nullableAttributeView.update("newNullable");
+        assertEquals("newNullable", nullableAttributeView.value());
         assertEquals("newNullable", testBean.getNullableValue());
 
-        intAttribute.update(6);
-        assertEquals(Integer.valueOf(6), intAttribute.value());
+        intAttributeView.update(6);
+        assertEquals(Integer.valueOf(6), intAttributeView.value());
         assertEquals(6, testBean.getIntValue());
 
     }
 
     @Test
     public void testNullableField() {
-        nullableAttribute.update(null);
-        assertNull(nullableAttribute.value());
+        nullableAttributeView.update(null);
+        assertNull(nullableAttributeView.value());
         assertNull(testBean.getNullableValue());
 
-        nullableAttribute.update("not null anymore");
-        assertEquals("not null anymore", nullableAttribute.value());
+        nullableAttributeView.update("not null anymore");
+        assertEquals("not null anymore", nullableAttributeView.value());
         assertEquals("not null anymore", testBean.getNullableValue());
 
         try {
-            normalAttribute.update(null);
+            normalAttributeView.update(null);
             fail();
         } catch (UnsupportedOperationException e) {
-            assertEquals("Illegal to update non-nullable on 'normalValue' with <null> value in bean class '" +
-                    TestBean.class.getName() + "'", e.getMessage());
+            assertEquals(
+                    "Illegal to update non-nullable on 'normalValue' with <null> value in bean class '" + TestBean.class.getName() +
+                            "'", e.getMessage());
         }
     }
 
     @Test
     public void testNotAnnotatedField() throws NoSuchFieldException {
         try {
-            new BeanEditAttribute<String>(testBean, BeanEditUtils.fieldForName(testBean, "notAnnotatedField"));
+            new ViewBeanField<String>(testBean, ViewBeanUtils.fieldForName(testBean, "notAnnotatedField"));
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals("on does not have the annotation @" + ViewField.class.getSimpleName(), e.getMessage());
@@ -128,8 +126,8 @@ public class BeanEditAttributeTest {
 
     @Test
     public void testValueClass() {
-        assertEquals(String.class, normalAttribute.valueClass());
-        assertEquals(int.class, intAttribute.valueClass());
+        assertEquals(String.class, normalAttributeView.valueClass());
+        assertEquals(int.class, intAttributeView.valueClass());
     }
 
     private static class TestBean {

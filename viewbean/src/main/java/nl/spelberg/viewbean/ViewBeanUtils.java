@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class BeanEditUtils {
+public class ViewBeanUtils {
 
     public static List<Field> allDeclaredFields(Class<?> beanClass) {
         List<Field> fieldList = new ArrayList<Field>();
