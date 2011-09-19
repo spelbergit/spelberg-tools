@@ -7,6 +7,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class ViewBeanPanelTest {
 
@@ -39,6 +40,17 @@ public class ViewBeanPanelTest {
 
     }
 
+    @Test
+    public void testSubmitText() {
+        TestBean testBean = new TestBean("A value for a String.");
+        wicketTester.startComponentInPage(new ViewBeanPanel("testPanel", testBean));
+
+        wicketTester.newFormTester("inputForm").setValue("fieldList:2:viewBeanField:field", "New String value for A");
+        wicketTester.submitForm("inputForm");
+
+        wicketTester.assertModelValue("inputForm:fieldList:2:viewBeanField:field", "New String value for A");
+        assertEquals("New String value for A", testBean.aString);
+    }
 
     private class TestBean implements Serializable {
 
