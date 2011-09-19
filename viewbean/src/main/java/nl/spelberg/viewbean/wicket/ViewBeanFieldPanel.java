@@ -15,7 +15,7 @@ public class ViewBeanFieldPanel<T> extends Panel implements ViewBeanField.Update
         super(id);
         this.viewBeanField = viewBeanField;
 
-        add(new Label("name", viewBeanField.id()));
+        add(new Label("name", viewBeanField.label()));
         TextField<T> field = new TextField<T>("field", new ViewBeanFieldModel<T>(viewBeanField));
         add(field);
         add(new FeedbackPanel("fieldFeedback", new ComponentFeedbackMessageFilter(ViewBeanFieldPanel.this)));

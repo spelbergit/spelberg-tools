@@ -4,9 +4,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
 /**
- * Annotate fields to make them editable in the {@link nl.spelberg.wicket.beanedit.BeanEditor}.<br/>
+ * Annotate fields to make them editable in the {@link nl.spelberg.viewbean.ViewBeanModel}.<br/>
  * <br/>
- * By default the on value will be updated directly using reflection,
+ * By default the value will be updated directly using reflection.
  */
 @java.lang.annotation.Documented
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
