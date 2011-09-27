@@ -40,6 +40,29 @@ public class ViewBeanModelTest {
         assertFalse(valueAttributeView.nullable());
     }
 
+    @Test
+    public void testComplexAttributes() {
+        ComplexBean complexBean = new ComplexBean("ID", "complex value", 42, "Flinke omschrijving.");
+        ViewBeanModel<ComplexBean> beanModel = new ViewBeanModel<ComplexBean>(complexBean);
+
+        assertNotNull(beanModel.fields());
+        assertEquals(4, beanModel.fields().size());
+
+        ViewBeanField<String> nameBeanField = beanModel.fieldWithName("name", String.class);
+
+        assertEquals(new ViewBeanField<String>(complexBean, ViewBeanUtils.fieldForName(complexBean, "name")),
+                beanModel.fields().iterator().next());
+
+        assertEquals("name", nameBeanField.id());
+        assertEquals("complex value", nameBeanField.value());
+        assertFalse(nameBeanField.readOnly());
+        assertFalse(nameBeanField.nullable());
+
+        ViewBeanField<Integer> leeftijdAttributeView = beanModel.fieldWithName("leeftijd", Integer.class);
+        assertTrue(leeftijdAttributeView.readOnly());
+        assertFalse(leeftijdAttributeView.nullable());
+    }
+
     private static class SimpleBean {
 
         @ViewField

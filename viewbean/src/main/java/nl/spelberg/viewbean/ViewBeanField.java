@@ -3,6 +3,7 @@ package nl.spelberg.viewbean;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import nl.spelberg.util.converter.BasicTypesConverter;
 import nl.spelberg.util.event.Listeners;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
@@ -57,6 +58,11 @@ public class ViewBeanField<T> implements Serializable {
         }
     }
 
+    public String fieldName() {
+        init();
+        return field.getName();
+    }
+
     public String id() {
         init();
         return id;
@@ -84,6 +90,18 @@ public class ViewBeanField<T> implements Serializable {
 
     public void update(T value) {
         init();
+        checkIllegalOperations(value);
+        try {
+            updateListeners.onAll().beforeUpdate(this);
+            setBeanValue(value);
+            updateListeners.onAll().afterUpdate(this);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(
+                    "Failed to update on " + id + " with value '" + value + "' in bean class '" + beanClass.getName() + "'", e);
+        }
+    }
+
+    private void checkIllegalOperations(T value) {
         if (annotation.readOnly()) {
             throw new UnsupportedOperationException(
                     "Illegal to update read-only on '" + id + "' in bean class '" + beanClass.getName() + "'");
@@ -94,19 +112,18 @@ public class ViewBeanField<T> implements Serializable {
         }
         if (value == null && !annotation.nullable()) {
             throw new UnsupportedOperationException(
-                    "Illegal to update non-nullable on '" + id + "' with <null> value in bean class '" + beanClass.getName() +
-                            "'");
+                    "Illegal to update non-nullable on '" + id + "' with <null> value in bean class '" + beanClass.getName() + "'");
         }
+    }
 
-        updateListeners.onAll().beforeUpdate(this);
-
+    private void setBeanValue(T rawValue) {
         try {
+            Object value = BasicTypesConverter.convert(rawValue, field.getType());
             field.set(bean, value);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(
+                    "Failed to update on " + id + " with value '" + rawValue + "' in bean class '" + beanClass.getName() + "'", e);
         }
-
-        updateListeners.onAll().afterUpdate(this);
     }
 
     public boolean readOnly() {
@@ -154,6 +171,7 @@ public class ViewBeanField<T> implements Serializable {
     public static interface UpdateListener<T> {
 
         void beforeUpdate(ViewBeanField<T> viewBeanField);
+
         void afterUpdate(ViewBeanField<T> viewBeanField);
 
     }

@@ -72,4 +72,20 @@ public class ViewBeanModel<T> implements ViewBeanField.UpdateListener<Object> {
     public void afterUpdate(ViewBeanField<Object> viewBeanField) {
         log.info("After update: " + viewBeanField);
     }
+
+    @SuppressWarnings({"unchecked"})
+    public Class<T> getBeanClass() {
+        return (Class<T>) bean.getClass();
+    }
+
+    public int fieldIndexForName(String attributeName) {
+        int index = 0;
+        for (ViewBeanField viewBeanField : fields.values()) {
+            if (viewBeanField.fieldName().equals(attributeName)) {
+                return index;
+            }
+            index++;
+        }
+        throw new IllegalStateException("No attribute with name '" + attributeName + "'");
+    }
 }

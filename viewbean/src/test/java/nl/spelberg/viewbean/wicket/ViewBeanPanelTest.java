@@ -21,35 +21,61 @@ public class ViewBeanPanelTest {
     @Test
     public void testShowPanel() {
 
-        wicketTester.startComponentInPage(new ViewBeanPanel("testPanel", new TestBean("A value for a String.")));
+        ViewBeanPanel panel = new ViewBeanPanel("testPanel", new TestBean("A value for a String."));
+        wicketTester.startComponentInPage(panel);
 
-        wicketTester.assertLabel("inputForm:fieldList:0:viewBeanField:name", "simpleString");
-        wicketTester.assertComponent("inputForm:fieldList:0:viewBeanField:field", TextField.class);
-        wicketTester.assertComponent("inputForm:fieldList:0:viewBeanField:fieldFeedback", FeedbackPanel.class);
-        wicketTester.assertModelValue("inputForm:fieldList:0:viewBeanField:field", null);
+        String field1Id = panel.getFormFieldIdFor("simpleString");
+        wicketTester.assertLabel(field1Id + ":name", "simpleString");
+        wicketTester.assertComponent(field1Id + ":field", TextField.class);
+        wicketTester.assertComponent(field1Id + ":fieldFeedback", FeedbackPanel.class);
+        wicketTester.assertModelValue(field1Id + ":field", null);
 
-        wicketTester.assertLabel("inputForm:fieldList:1:viewBeanField:name", "idStringID");
-        wicketTester.assertComponent("inputForm:fieldList:1:viewBeanField:field", TextField.class);
-        wicketTester.assertComponent("inputForm:fieldList:1:viewBeanField:fieldFeedback", FeedbackPanel.class);
-        wicketTester.assertModelValue("inputForm:fieldList:1:viewBeanField:field", null);
+        String field2Id = panel.getFormFieldIdFor("idString");
+        wicketTester.assertLabel(field2Id + ":name", "idStringID");
+        wicketTester.assertComponent(field2Id + ":field", TextField.class);
+        wicketTester.assertComponent(field2Id + ":fieldFeedback", FeedbackPanel.class);
+        wicketTester.assertModelValue(field2Id + ":field", null);
 
-        wicketTester.assertLabel("inputForm:fieldList:2:viewBeanField:name", "A String");
-        wicketTester.assertComponent("inputForm:fieldList:2:viewBeanField:field", TextField.class);
-        wicketTester.assertComponent("inputForm:fieldList:2:viewBeanField:fieldFeedback", FeedbackPanel.class);
-        wicketTester.assertModelValue("inputForm:fieldList:2:viewBeanField:field", "A value for a String.");
+        String field3Id = panel.getFormFieldIdFor("aString");
+        wicketTester.assertLabel(field3Id + ":name", "A String");
+        wicketTester.assertComponent(field3Id + ":field", TextField.class);
+        wicketTester.assertComponent(field3Id + ":fieldFeedback", FeedbackPanel.class);
+        wicketTester.assertModelValue(field3Id + ":field", "A value for a String.");
+
+        String field4Id = panel.getFormFieldIdFor("anInteger");
+        wicketTester.assertLabel(field4Id + ":name", "anInteger");
+        wicketTester.assertComponent(field4Id + ":field", TextField.class);
+        wicketTester.assertComponent(field4Id + ":fieldFeedback", FeedbackPanel.class);
+        wicketTester.assertModelValue(field4Id + ":field", Integer.valueOf(42));
+
+        String field5Id = panel.getFormFieldIdFor("anInt");
+        wicketTester.assertLabel(field5Id + ":name", "anInt");
+        wicketTester.assertComponent(field5Id + ":field", TextField.class);
+        wicketTester.assertComponent(field5Id + ":fieldFeedback", FeedbackPanel.class);
+        wicketTester.assertModelValue(field5Id + ":field", 24);
 
     }
 
     @Test
     public void testSubmitText() {
-        TestBean testBean = new TestBean("A value for a String.");
-        wicketTester.startComponentInPage(new ViewBeanPanel("testPanel", testBean));
+        String oldValue = "A value for a String.";
+        String newValue = "New String value for A";
+        TestBean testBean = new TestBean(oldValue);
+        ViewBeanPanel panel = new ViewBeanPanel("testPanel", testBean);
+        String aStringFieldId = panel.getFieldIdFor("aString") + ":field";
+        String aStringFormFieldId = panel.getFormFieldIdFor("aString") + ":field";
 
-        wicketTester.newFormTester("inputForm").setValue("fieldList:2:viewBeanField:field", "New String value for A");
-        wicketTester.submitForm("inputForm");
+        wicketTester.startComponentInPage(panel);
 
-        wicketTester.assertModelValue("inputForm:fieldList:2:viewBeanField:field", "New String value for A");
-        assertEquals("New String value for A", testBean.aString);
+        wicketTester.assertModelValue(aStringFormFieldId, oldValue);
+        assertEquals(oldValue, testBean.aString);
+
+        String inputForm = "inputForm";
+        wicketTester.newFormTester(inputForm).setValue(aStringFieldId, newValue);
+        wicketTester.submitForm(inputForm);
+
+        wicketTester.assertModelValue(aStringFormFieldId, newValue);
+        assertEquals(newValue, testBean.aString);
     }
 
     private class TestBean implements Serializable {
@@ -62,6 +88,13 @@ public class ViewBeanPanelTest {
 
         @ViewField(id = "aStringID", label = "A String")
         private String aString;
+
+        @ViewField
+        private Integer anInteger = Integer.valueOf(42);
+
+        @ViewField
+        private int anInt = 24;
+
 
         private TestBean(String aString) {
             this.aString = aString;
