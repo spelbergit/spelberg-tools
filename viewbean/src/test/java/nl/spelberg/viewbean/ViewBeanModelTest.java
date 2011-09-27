@@ -8,8 +8,10 @@ public class ViewBeanModelTest {
 
     @Test
     public void testNoAttributes() {
-        ViewBeanModel beanModel = new ViewBeanModel<Object>(new Object());
+        Object bean = new Object();
+        ViewBeanModel beanModel = new ViewBeanModel<Object>(bean);
 
+        assertEquals(bean, beanModel.bean());
         assertNotNull(beanModel.fields());
         assertEquals(0, beanModel.fields().size());
 

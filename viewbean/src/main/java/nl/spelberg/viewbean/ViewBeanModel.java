@@ -55,7 +55,7 @@ public class ViewBeanModel<T> implements ViewBeanField.UpdateListener<Object> {
         }
     }
 
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({"unchecked", "UnusedParameters"})
     public <Y> ViewBeanField<Y> fieldWithName(String name, Class<Y> fieldClass) {
         return fieldWithName(name);
     }

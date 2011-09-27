@@ -18,7 +18,7 @@ public class BasicTypesConverterTest {
         }
     }
 
-    @SuppressWarnings({"StringEquality"})
+    @SuppressWarnings({"StringEquality", "NumberEquality"})
     @Test
     public void testSameTypes() throws Exception {
         String myString = "My String";
